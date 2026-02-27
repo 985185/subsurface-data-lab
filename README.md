@@ -1,6 +1,6 @@
 # Subsurface Data Lab
 Part of the Subsurface Data Lab:
-https://github.com/<yourusername>/subsurface-data-lab
+https://github.com/985185/subsurface-data-lab
 An open research environment for reconstructing, analysing, and querying operational history of oil & gas and CO₂ storage wells from real field data.
 ## What is Subsurface Data Lab?
 
