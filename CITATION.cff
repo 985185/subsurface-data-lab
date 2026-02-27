@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: "Subsurface Data Lab"
+message: "If you use this project in research or publications, please cite it."
+type: software
+authors:
+  - family-names: "Appalla"
+    given-names: "Tejaswy TJ"
+affiliation: "Independent research / engineering"
+date-released: 2026
+repository-code: "https://github.com/<yourusername>/subsurface-data-lab"
+keywords:
+  - petroleum engineering
+  - well integrity
+  - CCS
+  - decommissioning
+  - drilling reports
+  - subsurface data
+license: MIT
