@@ -3,7 +3,7 @@
 Source: typed events JSONL (886 events)
 
 ## Phase timeline (coalesced blocks)
-
+ 
 ### Block 1: Drilling
 - Window: n/a → n/a
 - Report days covered: 2008-02-13 → 2008-02-15 (3 days)
