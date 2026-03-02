@@ -1,130 +1,102 @@
-# Subsurface Data Lab
+# Legacy Well Digital Twin Reconstruction Engine (LW-DTRE)
 
-**DDR HTML in. Engineering timeline out.**
+LW-DTRE deterministically reconstructs drilling campaign timelines from
+Volve Daily Drilling Reports (DDR).
 
-An open, deterministic well-history reconstruction tool that converts Daily Drilling Reports into a machine-readable construction timeline — without manually reading 70+ days of logs.
+The engine converts raw DDR HTML files into structured campaign-scale
+operational timelines using rule-based extraction and classification.
 
----
+This project is designed for:
 
-## What it does
+-   Academic validation
+-   SPE-grade research
+-   Regulatory analysis
+-   Open reproducible subsurface studies
 
-Daily Drilling Reports (DDRs) contain the complete operational history of a well. They are written for humans. This tool makes them usable for machines.
+------------------------------------------------------------------------
 
-The pipeline takes raw DDR HTML, parses each operational entry, classifies it into a typed engineering event, and assembles those events into a smoothed phase-block timeline that reflects how the well was actually constructed.
+## What This Engine Does
 
-The result is a reproducible, auditable sequence of what happened — drilling, casing, cementing, pressure tests, tripping, waiting — organised chronologically and ready for analysis.
+Given a folder of DDR HTML files, LW-DTRE performs:
 
----
+1.  Deterministic extraction of operations table rows
+2.  Conversion to structured daily JSONL events
+3.  Campaign-level merging
+4.  Deterministic event classification
+5.  Dominant daily phase detection
+6.  Cross-day phase continuity segmentation
 
-## Who it's for
+The system produces campaign-scale structured datasets suitable for:
 
-- **Regulators and auditors** reconstructing legacy well history from archived documents
-- **Engineers** building well timelines or operational narratives for integrity review or abandonment planning
-- **Researchers** who need a reproducible, citable method for operational data analysis (SPE-compatible workflow)
+-   Timeline reconstruction
+-   Operational phase analysis
+-   Injectivity and integrity correlation
+-   Well lifecycle modeling
 
----
+------------------------------------------------------------------------
 
-## What makes it different
+## Repository Structure
 
-**Deterministic and explainable.** Same input always produces the same output. No black-box inference. Every classification decision follows explicit rules that can be audited.
+tools/ Extraction and classification scripts\
+schema/ Event schema definitions\
+data/derived/ Reconstructed campaign artifacts\
+analysis/ Experimental notebooks and investigations\
+docs/ Design notes and validation documents
 
-**Engineering-aware.** The classifier understands the difference between *construction progress* (drilling ahead, running casing, cementing) and *support activity* (waiting on cement, conditioning mud, wireline runs, trips). Support activity is recorded but does not advance the construction phase.
+Canonical reconstruction outputs live under:
 
-**Integrity tests are a first-class event type.** FIT, LOT, and pressure tests are classified separately so they cannot corrupt drilling-phase logic or be misread as operational progress.
+data/derived/`<WELL>`{=html}/
 
-**Reproducible for research.** The method is rule-based and versioned. Results can be independently verified and the approach can be cited.
+------------------------------------------------------------------------
 
----
+## Validated Campaigns (v1.1)
 
-## Output formats
+  Well        Year   Days   Events   Phase Blocks
+  ----------- ------ ------ -------- --------------
+  15/9-F-4    2008   69     886      23
+  15/9-F-12   2007   96     1059     8
+  15/9-F-10   2009   71     1075     7
 
-**Event-level JSONL** — one typed operational event per DDR entry, preserving date, duration, classification, and source text.
+Total events processed: \>3000
 
-Example event record:
-```json
-{
-  "date": "2008-12-04",
-  "day_number": 12,
-  "event_type": "CEMENTING",
-  "phase": "12-1/4\" HOLE",
-  "duration_hrs": 6.5,
-  "source_text": "Pumped 120 bbls lead slurry and 80 bbls tail slurry. WOC 8 hrs.",
-  "is_construction_progress": true
-}
-```
+------------------------------------------------------------------------
 
-**Phase blocks** — a smoothed macro-timeline of construction phases, suitable for well history charts or regulatory summaries.
+## Design Philosophy
 
-Example phase block:
-```json
-{
-  "phase": "12-1/4\" HOLE",
-  "start_date": "2008-11-28",
-  "end_date": "2008-12-06",
-  "duration_days": 8,
-  "key_events": ["DRILL_AHEAD", "WIPER_TRIP", "LOT", "CEMENTING"]
-}
-```
+-   Fully deterministic
+-   No AI required for baseline reconstruction
+-   Minimal dependencies
+-   Reproducible
+-   Campaign-scale continuity aware
+-   Transparent rule-based classification
 
----
+------------------------------------------------------------------------
 
-## Quickstart
+## Current Limitations
 
-**Requirements:** Python 3.9+, dependencies in `requirements.txt`
+-   Event taxonomy coarse (drilling dominant)
+-   Cementing / casing detection incomplete
+-   No quantitative classifier benchmarking yet
+-   No depth correlation integration yet
 
-```bash
-git clone https://github.com/985185/subsurface-data-lab.git
-cd subsurface-data-lab
-pip install -r requirements.txt
-```
+------------------------------------------------------------------------
 
-**Run the pipeline on the included example:**
+## Next Development Phase
 
-```bash
-[command to parse DDR HTML → structured rows]
-[command to classify rows → event JSONL]
-[command to convert events → phase blocks]
-```
+-   Expand event classification taxonomy
+-   Improve cementing and casing detection
+-   Introduce deterministic tripping logic
+-   Add validation metrics
+-   Integrate depth/time integrity checks
+-   Prepare SPE-ready campaign case study
 
-Output will appear in `examples/output/`.
+------------------------------------------------------------------------
 
-See [`GETTING_STARTED.md`](GETTING_STARTED.md) for a full walkthrough using the Volve F-15A well (December 2008 drilling campaign).
+## Status
 
----
+v1.1 marks transition from prototype validation to multi-well
+campaign-scale reconstruction.
 
-## Repository structure
+The engine is stable and reproducible.
 
-```
-tools/          Core engine — DDR parser, event classifier, phase-block builder
-examples/       Minimal worked example: input DDR → output JSONL and phase blocks
-docs/           Method documentation, classification rules, design decisions
-schema/         JSON schemas for event and phase-block output formats
-```
-
----
-
-## Data source
-
-Initial development and the v1.0 release use the publicly available **Volve Field dataset** released by Equinor — one of the most complete open petroleum field data releases available, and a realistic test environment for reproducible subsurface workflows.
-
-The v1.0 release reconstructs the **F-15A well, December 2008 drilling campaign**.
-
----
-
-## Project status
-
-Active research project. The pipeline is functional and versioned. Development prioritises transparency and reproducibility.
-
-See [`VERSION.md`](VERSION.md) for what is currently frozen and what is in progress.
-
----
-
-## Citation
-
-If you use this work in research or regulatory analysis, please cite using [`CITATION.cff`](CITATION.cff).
-
----
-
-## License
-
-MIT — free to use, adapt, and build on.
+Taxonomy refinement is the next major milestone.
